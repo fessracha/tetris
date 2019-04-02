@@ -280,22 +280,30 @@ function move() {
             figureBody[i].classList.remove('figure');
             figureBody[i].classList.add('set');
         }
-        checkLine();
+        checkFields();
         create();
     }
 }
 
-function checkLine() {
+function checkFields() {
 
     let check_line = false;
 
     for (let y=18; y>0; y--) {
+
+        //Проверяем собрана ли линия
         if(document.querySelectorAll(`.set[posY="${y}"]`).length == 10) {
-            document.querySelectorAll(`.set[posY="${y}"]`).forEach(function(item, i, arr){
+            document.querySelectorAll(`.set[posY="${y}"]`).forEach((item) => {
                 item.classList.remove('set');
                 check_line = true;
             });
         }
+        //Проверяем достижение верха поля
+        document.querySelectorAll(`.set[posY="${y}"]`).forEach((item) => {
+            if(+item.getAttribute('posY') >= 14) {
+                gameOver();
+            }
+        })
     }
 
     if(check_line == true) {
@@ -312,12 +320,20 @@ function deleteLine() {
         figureBody.push([item.getAttribute('posX'), item.getAttribute('posY')]);
         item.classList.remove('set');
     });
-    console.log(figureBody);
-
+    
     figureBody.forEach(function(item){
-        
+        document.querySelector(`[posX="${item[0]}"][posY="${item[1]-1}"]`).classList.add('set');
     });
-    alert();
+    
+}
+
+function gameOver() {
+
+    document.querySelectorAll(`.set`).forEach((item) => {
+        item.classList.remove('set');
+    })
+
+    alert('Конец игры');
 }
 
 let interval = setInterval(() => {
